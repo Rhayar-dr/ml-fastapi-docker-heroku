@@ -1,6 +1,7 @@
 import pickle
 import re
 from pathlib import Path
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 
 __version__ = "0.1.0"
 
@@ -38,3 +39,15 @@ def predict_pipeline(text):
     text = text.lower()
     pred = model.predict([text])
     return classes[pred[0]]
+
+
+def translate_pipeline(text):
+    model_name = "Helsinki-NLP/opus-mt-zh-en"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+
+    classifier = pipeline("translation", model=model, tokenizer=tokenizer)
+
+    res = classifier(text)
+    print(res)
+    return res
